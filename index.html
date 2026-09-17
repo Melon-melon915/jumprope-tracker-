@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>單車步紀錄</title>
+<meta name="theme-color" content="#1e3a8a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="單車步">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loading" class="screen active">
+  <div class="spinner"></div>
+</div>
+
+<div id="login-screen" class="screen">
+  <div class="login-card">
+    <h1>🚴 單車步紀錄</h1>
+    <p class="subtitle">30秒單車步速度跳 個人紀錄</p>
+
+    <div class="tabs">
+      <button id="tab-login" class="tab active">登入</button>
+      <button id="tab-signup" class="tab">註冊新用戶</button>
+    </div>
+
+    <div id="form-login" class="form-panel">
+      <label>名字</label>
+      <input type="text" id="login-name" placeholder="例如 Kelvin" autocomplete="username">
+      <label>密碼</label>
+      <input type="password" id="login-password" placeholder="密碼" autocomplete="current-password">
+      <button class="primary-btn" id="btn-login">登入</button>
+      <p class="error" id="login-error"></p>
+    </div>
+
+    <div id="form-signup" class="form-panel hidden">
+      <label>名字（用作登入，不能重複）</label>
+      <input type="text" id="signup-name" placeholder="例如 Kelvin">
+      <label>設定密碼（至少6位）</label>
+      <input type="password" id="signup-password" placeholder="密碼">
+      <button class="primary-btn" id="btn-signup">建立帳戶</button>
+      <p class="error" id="signup-error"></p>
+    </div>
+  </div>
+</div>
+
+<div id="app-screen" class="screen">
+  <header class="app-header">
+    <div>
+      <div class="app-title">🚴 單車步紀錄</div>
+      <div class="user-name" id="display-name"></div>
+    </div>
+    <button id="btn-logout">登出</button>
+  </header>
+
+  <nav class="duration-tabs">
+    <button class="dtab active" data-dur="30">30秒</button>
+    <button class="dtab" data-dur="20">20秒</button>
+    <button class="dtab" data-dur="15">15秒</button>
+    <button class="dtab" data-dur="10">10秒</button>
+  </nav>
+
+  <main class="content">
+    <section class="pb-card">
+      <div class="pb-label">個人最佳 (Personal Best)</div>
+      <div class="pb-value"><span id="pb-number">--</span><span class="pb-unit">下</span></div>
+      <div class="pb-date" id="pb-date"></div>
+    </section>
+
+    <section class="input-card">
+      <div class="input-title" id="input-title">新增 30秒 紀錄</div>
+      <div class="input-row">
+        <div class="input-group">
+          <label>日期</label>
+          <input type="date" id="record-date">
+        </div>
+        <div class="input-group">
+          <label>下數</label>
+          <input type="number" id="record-count" placeholder="例如 70" min="0" inputmode="numeric">
+        </div>
+      </div>
+      <button class="primary-btn" id="btn-add-record">儲存紀錄</button>
+      <p class="success" id="add-success"></p>
+    </section>
+
+    <section class="chart-card">
+      <div class="chart-title" id="chart-title">30秒 進步曲線</div>
+      <canvas id="progress-chart" height="220"></canvas>
+      <p class="empty-hint" id="chart-empty">尚無紀錄，新增第一筆紀錄開始追蹤進步吧！</p>
+    </section>
+
+    <section class="history-card">
+      <div class="chart-title">歷史紀錄</div>
+      <div id="history-list"></div>
+    </section>
+  </main>
+</div>
+
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
